@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Web App</title>
+    <!-- Include Tailwind CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 p-8">
+
+    <div id="app" class="container mx-auto">
+
+        <!-- Navigation Bar -->
+        <nav class="flex items-center justify-between bg-blue-500 p-4">
+            <div class="flex items-center">
+                <!-- Bus Logo -->
+                <img src="https://apnibus.com/assets/logo.svg" alt="Bus Logo" class="mr-4 h-15">
+                <!-- Title -->
+                <h1 class="text-black text-3xl font-bold text-center font-serif mt-2 ml-1">BD Sales Board</h1>
+            </div>
+
+            <!-- Mobile Form -->
+            <form onsubmit="return sendOTP()">
+                <label for="bdMobile" class="text-white mr-2">Enter Mobile:</label>
+                <input id="bdMobile" name="bdMobile" class="p-2 border rounded-md" required>
+                <button type="submit" class="p-2 bg-white text-blue-500 rounded-md">Send OTP</button>
+            </form>
+
+            <!-- Token Form -->
+            <form onsubmit="return submitToken()">
+                <label for="bdToken" class="text-white mr-2">Enter Token:</label>
+                <input id="bdToken" name="bdToken" class="p-2 border rounded-md" required>
+                <button type="submit" class="p-2 bg-white text-blue-500 rounded-md">Submit</button>
+            </form>
+        </nav>
+
+        <!-- Content Section -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-10">
+            <div onclick="showSection('totalOrders')" class="border p-4 cursor-pointer">
+                <h2 class="text-xl font-bold">Monthly Sales</h2>
+                <p id="monthlySales" class="text-gray-600"></p>
+            </div>
+            <div onclick="showSection('totalGpsOrders')" class="border p-4 cursor-pointer">
+                <h2 class="text-xl font-bold">GPS Orders Summary</h2>
+                <p id="gpsOrdersSummary" class="text-gray-600"></p>
+            </div>
+            <div onclick="showSection('totalApiOrders')" class="border p-4 cursor-pointer">
+                <h2 class="text-xl font-bold">API Orders Summary</h2>
+                <p id="apiOrdersSummary" class="text-gray-600"></p>
+            </div>
+            <div onclick="showSection('gpsPending')" class="border p-4 cursor-pointer">
+                <h2 class="text-xl font-bold">Pending GPS</h2>
+                <p id="pendingGPS" class="text-gray-600"></p>
+            </div>
+            <div onclick="showSection('apiPending')" class="border p-4 cursor-pointer">
+                <h2 class="text-xl font-bold">Pending GPS API</h2>
+                <p id="pendingGPSAPI" class="text-gray-600"></p>
+            </div>
+            <div onclick="showSection('kycPending')" class="border p-4 cursor-pointer">
+                <h2 class="text-xl font-bold">Pending KYCs</h2>
+                <p id="pendingKYCs" class="text-gray-600"></p>
+            </div>
+            <div onclick="showSection('busFormPending')" class="border p-4 cursor-pointer">
+                <h2 class="text-xl font-bold">Bus Form Pending</h2>
+                <p id="busFormPending" class="text-gray-600"></p>
+            </div>
+        </div>
+
+        <div id="selectedSection" class="mt-8">
+            <!-- Table will be dynamically generated here based on the selected section -->
+        </div>
+    </div>
+
+    <script>
+
+        // function submitMobile() {
+        //     // Make a POST request to your API with document.getElementById('bdToken').value
+        //     // Update the UI with the response data
+        //     return false; // Prevent form submission
+        // }
+
+        function sendOTP() {
+          const mobileInput = document.getElementById('bdMobile');
+          const mobileNumber = mobileInput.value;
+
+          fetch('https://apis.ab.apnibus.com/account/sales-app/otp/', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({ mobile: mobileNumber }),
+          })
+          .then(response => response.json())
+          .then(data => {
+              if (data.status === 200) {
+                  alert('OTP Sent successfully!');
+                  localStorage.setItem('mobileNumber', mobileNumber);
+
+                  document.getElementById('loginContainer').style.display = 'none';
+                  document.getElementById('otpContainer').style.display = 'block';
+              } else {
+                  throw new Error('Failed to send OTP. Please try again.');
+              }
+          })
+          .catch(error => {
+              alert(error.message);
+              console.error(error);
+          });
+      }
+
+
+        function submitToken() {
+
+        var bdTokenValue = document.getElementById('bdToken').value;
+
+        fetch('https://apis.ab.apnibus.com/onboarding/bdSummarySales', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                bdToken: bdTokenValue
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+            // Update the UI with the response data (modify this part based on your actual UI update logic)
+            alert('POST request successful! Response: ' + JSON.stringify(data));
+        })
+        .catch(error => {
+            // Handle errors
+            console.error('Error making POST request:', error);
+            // Update the UI to indicate an error (modify this part based on your actual UI update logic)
+            alert('Error making POST request. Please try again.');
+        });
+
+        return false; // Prevent form submission
+    }
+
+        function showSection(section) {
+            // Remove the 'bg-green-200' class from all sections
+            var sections = document.querySelectorAll('.grid div');
+            sections.forEach(function(item) {
+                item.classList.remove('bg-green-500');
+            });
+
+            // Add the 'bg-green-200' class to the selected section
+            document.querySelector(div[onclick="showSection('${section}')").classList.add('bg-green-500');
+
+            // Update the UI based on the selected section
+            document.getElementById('selectedSection').innerHTML = '<h2 class="text-2xl font-bold">' + section + '</h2>';
+
+            // Get the data for the selected section
+            var data = getSelectedData(section);
+
+            // Dynamically generate the table based on the selected section
+            var tableContent = generateTable(data);
+            document.getElementById('selectedSection').innerHTML += '<table class="min-w-full bg-white border border-gray-300 mt-4">' + tableContent + '</table>';
+        }
+
+        function getSelectedData(section) {
+            // Make a request to your API based on the selected section
+            // and return the response data
+            // For now, let's mock the response data
+            var mockData = {
+                totalOrders: { /* ... */ },
+                totalGpsOrders: { /* ... */ },
+                totalApiOrders: { /* ... */ },
+                gpsPending: { /* ... */ },
+                apiPending: { /* ... */ },
+                kycPending: { /* ... */ }
+            };
+
+            return mockData[section];
+        }
+
+        function generateTable(data) {
+            // Generate the table content based on the data
+            // This should be customized based on your actual data structure
+            var tableContent = '<thead><tr><th>Column 1</th><th>Column 2</th><th>Column 3</th></tr></thead><tbody>';
+
+            // Loop through the data and populate the table rows
+            for (var key in data) {
+                if (data.hasOwnProperty(key)) {
+                    tableContent += '<tr>';
+                    // Assuming the data structure has some properties you want to display in the table
+                    tableContent += '<td>' + data[key].property1 + '</td>';
+                    tableContent += '<td>' + data[key].property2 + '</td>';
+                    tableContent += '<td>' + data[key].property3 + '</td>';
+                    tableContent += '</tr>';
+                }
+            }
+
+            tableContent += '</tbody>';
+            return tableContent;
+        }
+    </script>
+</body>
+</html>

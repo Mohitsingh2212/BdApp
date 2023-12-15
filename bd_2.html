@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BD DATA</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f9fa;
+            color: #343a40;
+        }
+
+        h1, h2 {
+            color: #17741a;
+        }
+
+        h1 {
+            margin-top: 20px;
+        }
+
+        .container {
+            margin-top: 30px;
+        }
+
+        form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        input[type="text"] {
+            width: 70%;
+            padding: 8px;
+            margin-right: 5px;
+            box-sizing: border-box;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            background-color: #007bff;
+        }
+
+        #bd_information, #bd_details, #detailsContent {
+            margin-top: 30px;
+        }
+
+        .bg-dark {
+            background-color: #343a40 !important;
+        }
+
+        .text-white {
+            color: #fff !important;
+        }
+
+        .rounded {
+            border-radius: 8px;
+        }
+
+        .list-group-item {
+            background-color: #4caf50;
+            border: 1px solid #4caf50;
+            border-radius: 10px;
+            margin: 5px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .list-group-item a {
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .list-group-item:nth-child(odd) {
+            background-color: #4caf50;
+        }
+
+        table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+        }
+
+        th, td {
+            text-align: center;
+            border: 1px solid #dee2e6;
+            padding: 12px;
+        }
+
+        tbody tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        #detailsContent {
+            margin-top: 20px;
+            overflow-x: auto;
+        }
+
+        .nested-table {
+            margin-top: 10px;
+            margin-left: 20px;
+        }
+        #highlighted {
+            background-color: #4caf50;
+        }
+        #bdName{
+            color: white;
+        }
+        #bdMobile{
+            color: white;
+        }
+    </style>
+</head>
+<body class="container">
+    <form id="apiForm" class="mt-3">
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="bdToken">bdToken:</label>
+                <div class="input-group">
+                    <input type="text" id="bdToken" name="bdToken" class="form-control" required>
+                    <div class="input-group-append">
+                        <button type="button" onclick="submitForm()" class="btn btn-primary ml-3">Submit</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <div id="bd_details" class="text-center">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="list-group-item"><a href="#" onclick="showDetails('totalOrders')">Total Orders</a></div>
+            </div>
+            <div class="col-md-6">
+                <div class="list-group-item"><a href="#" onclick="showDetails('totalGpsOrders')">Total GPS Orders</a></div>
+            </div>
+            <div class="col-md-6">
+                <div class="list-group-item"><a href="#" onclick="showDetails('totalApiOrders')">Total API Orders</a></div>
+            </div>
+            <div class="col-md-6">
+                <div class="list-group-item"><a href="#" onclick="showDetails('gpsPending')">GPS Pending</a></div>
+            </div>
+            <div class="col-md-6">
+                <div class="list-group-item"><a href="#" onclick="showDetails('apiPending')">API Pending</a></div>
+            </div>
+            <div class="col-md-6">
+                <div class="list-group-item"><a href="#" onclick="showDetails('kycPending')">KYC Pending</a></div>
+            </div>
+        </div>
+    </div>
+    <div id="bd_information" class="text-center mt-4">
+        <div class="row">
+            <div class="col-md-6 offset-md-3">
+                <div id="highlighted">
+                    <p id="bdName" class="mb-0"></p>
+                    <p id="bdMobile" class="mb-0"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="detailsContent" class="text-center"></div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        var jsonData;
+        function submitForm (){
+            var bdToken = document.getElementById("bdToken").value;
+            const apiUrl = 'https://apis.ab.apnibus.com/onboarding/bdSummarySales';
+            const postData = {
+            bdToken: bdToken
+            };
+            fetch(apiUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(postData)
+            })
+            .then(response => {
+                if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json(); 
+            })
+            .then(data => {
+                jsonData = data;
+                console.log('POST request successful:', jsonData);
+                showDetails('')
+            })
+            .catch(error => {
+                alert(error.message);
+                console.error('Error:', error);
+            });
+        }
+
+        function showDetails(detailsType) {
+            var detailsContent = document.getElementById('detailsContent');
+            try{
+                document.getElementById('bdName').textContent = 'BD Name: ' + jsonData.bdName;
+                document.getElementById('bdMobile').textContent = 'BD Mobile: ' + jsonData.bdMobile;
+                var detailsContent = document.getElementById('detailsContent');
+                if (typeof detailsType === 'string') {
+                    var clickedButtonName = detailsType.replace(/([A-Z])/g, ' $1').trim();
+                    detailsContent.innerHTML = '<h2>' + clickedButtonName + '</h2>';
+                    var detailsData = jsonData[detailsType];
+                    if (detailsData && Object.keys(detailsData).length > 0) {
+                        for (var orderSummary in detailsData) {
+                            var table = document.createElement('table');
+                            var thead = document.createElement('thead');
+                            var tbody = document.createElement('tbody');
+                            var headerRow = document.createElement('tr');
+                            var firstItem = detailsData[orderSummary][Object.keys(detailsData[orderSummary])[0]];
+                            for (var key in firstItem) {
+                                var th = document.createElement('th');
+                                th.textContent = key;
+                                headerRow.appendChild(th);
+                            }
+                            thead.appendChild(headerRow);
+                            table.appendChild(thead);
+                            for (var year in detailsData[orderSummary]) {
+                                var tr = document.createElement('tr');
+                                for (var valueKey in firstItem) {
+                                    var td = document.createElement('td');
+                                    if (detailsData[orderSummary][year][valueKey] !== undefined) {
+                                        if (typeof detailsData[orderSummary][year][valueKey] === 'object') {
+                                            var nestedTable = createNestedTable(detailsData[orderSummary][year][valueKey]);
+                                            td.appendChild(nestedTable);
+                                        } else {
+                                            td.textContent = detailsData[orderSummary][year][valueKey];
+                                        }
+                                    } else {
+                                        td.textContent = ""; 
+                                    }
+                                    tr.appendChild(td);
+                                }
+                                tbody.appendChild(tr);
+                            }
+                            table.appendChild(tbody);
+                            detailsContent.appendChild(table);
+                        }
+                    }
+                    detailsContent.style.display = 'block';
+                } else {
+                    console.error('Invalid detailsType:', detailsType);
+                }
+            } catch (error) {
+                alert(error.message);
+                console.error('Error in showDetails:', error);
+            }
+        }
+
+        function createNestedTable(obj) {
+            var nestedTable = document.createElement('table');
+            var nestedTbody = document.createElement('tbody');
+
+            for (var prop in obj) {
+                var nestedTr = document.createElement('tr');
+                var nestedTdKey = document.createElement('td');
+                nestedTdKey.textContent = prop;
+                var nestedTdValue = document.createElement('td');
+                nestedTdValue.textContent = obj[prop];
+
+                nestedTr.appendChild(nestedTdKey);
+                nestedTr.appendChild(nestedTdValue);
+
+                nestedTbody.appendChild(nestedTr);
+            }
+
+            nestedTable.appendChild(nestedTbody);
+
+            return nestedTable;
+        }
+    </script>
+</body>
+</html>
