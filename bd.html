@@ -218,7 +218,6 @@
             .then(response => response.json())
             .then(data => {
                 if (data.status === 200) {
-                    alert('OTP Sent successfully!');
                     localStorage.setItem('mobileNumber', mobileNumber);
     
                     document.getElementById('loginContainer').style.display = 'none';
@@ -261,7 +260,6 @@
                     const token = data.data.auth_token
                     console.log("token")
                     const name = data.data.name
-                    console.log("$$##$$$$$",token)
                     localStorage.setItem('token', token);
                     localStorage.setItem('name', name);
 
@@ -313,51 +311,21 @@
             document.getElementById('otpContainer').style.display = 'none';
             document.getElementById('bd_details').style.display = 'block';
             document.getElementById('detailsContent').style.display = 'block';
-            var detailsContent = document.getElementById('detailsContent');
-            try{
+    
+            try {
                 document.getElementById('bdName').textContent = localStorage.getItem('name');
-                console.log("#################$")
-                document.getElementById('bdMobile').textContent =localStorage.getItem('mobileNumber');
+                document.getElementById('bdMobile').textContent = localStorage.getItem('mobileNumber');
                 var detailsContent = document.getElementById('detailsContent');
                 if (typeof detailsType === 'string') {
                     var clickedButtonName = detailsType.replace(/([A-Z])/g, ' $1').trim();
                     detailsContent.innerHTML = '<h2>' + clickedButtonName + '</h2>';
                     var detailsData = jsonData[detailsType];
                     if (detailsData && Object.keys(detailsData).length > 0) {
-                        for (var orderSummary in detailsData) {
-                            var table = document.createElement('table');
-                            var thead = document.createElement('thead');
-                            var tbody = document.createElement('tbody');
-                            var headerRow = document.createElement('tr');
-                            var firstItem = detailsData[orderSummary][Object.keys(detailsData[orderSummary])[0]];
-                            for (var key in firstItem) {
-                                var th = document.createElement('th');
-                                th.textContent = key;
-                                headerRow.appendChild(th);
-                            }
-                            thead.appendChild(headerRow);
-                            table.appendChild(thead);
-                            for (var year in detailsData[orderSummary]) {
-                                var tr = document.createElement('tr');
-                                for (var valueKey in firstItem) {
-                                    var td = document.createElement('td');
-                                    if (detailsData[orderSummary][year][valueKey] !== undefined) {
-                                        if (typeof detailsData[orderSummary][year][valueKey] === 'object') {
-                                            var nestedTable = createNestedTable(detailsData[orderSummary][year][valueKey]);
-                                            td.appendChild(nestedTable);
-                                        } else {
-                                            td.textContent = detailsData[orderSummary][year][valueKey];
-                                        }
-                                    } else {
-                                        td.textContent = ""; 
-                                    }
-                                    tr.appendChild(td);
-                                }
-                                tbody.appendChild(tr);
-                            }
-                            table.appendChild(tbody);
-                            detailsContent.appendChild(table);
-                        }
+                        localStorage.setItem('selectedDetailsType', detailsType);
+                        localStorage.setItem('selectedDetailsData', JSON.stringify(detailsData));
+    
+                        // Update this line to pass parameters
+                        window.location.href = 'details.html?type=' + detailsType;
                     }
                     detailsContent.style.display = 'block';
                 } else {
@@ -368,28 +336,8 @@
                 console.error('Error in showDetails:', error);
             }
         }
+        showLoginContainer();
 
-        function createNestedTable(obj) {
-            var nestedTable = document.createElement('table');
-            var nestedTbody = document.createElement('tbody');
-
-            for (var prop in obj) {
-                var nestedTr = document.createElement('tr');
-                var nestedTdKey = document.createElement('td');
-                nestedTdKey.textContent = prop;
-                var nestedTdValue = document.createElement('td');
-                nestedTdValue.textContent = obj[prop];
-
-                nestedTr.appendChild(nestedTdKey);
-                nestedTr.appendChild(nestedTdValue);
-
-                nestedTbody.appendChild(nestedTr);
-            }
-
-            nestedTable.appendChild(nestedTbody);
-
-            return nestedTable;
-        }
         function logout() {
             // Clear the stored user data
             localStorage.removeItem('mobileNumber');

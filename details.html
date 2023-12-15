@@ -1,109 +1,127 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Details</title>
-    <!-- Your existing head content -->
-
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
+    <title>Table Render</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
-        /* Your existing styles */
+        body {
+            padding: 20px;
+        }
+
+        #tableContainer {
+            margin-top: 20px;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .table-bordered {
+            border: 1px solid #000;
+        }
+
+        .table-bordered th, .table-bordered td {
+            border: 1px solid #000;
+        }
+        #buttonName{
+            padding: 10px;
+            color: #4caf50;
+        }
     </style>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
-
 <body>
+    <nav class="container flex items-center justify-between bg-blue-500 p-4">
+        <div class="flex items-center">
+            <img src="https://apnibus.com/assets/logo.svg" alt="Bus Logo" class="mr-4 h-90">
+        </div>
+        <div id="bd_information" class="flex">
+            <p class="p-1 border rounded-md" id="bdName" ></p>
+            <p class="p-1 border rounded-md" id="bdMobile" ></p>
+        </div>
+    </nav>
 
-    <!-- Back button -->
-    <button class="p-2 bg-white text-blue-500 rounded-md" onclick="goBack()">Back</button>
-
-    <!-- Details content container -->
-    <div id="detailsContent" class="text-center"></div>
-
-    <!-- Pagination container -->
-    <div id="pagination" class="text-center"></div>
+    <div class="container" id="tableContainer">
+        <h2 id="buttonName" style="font-weight: bold;"></h2>
+    </div>
 
     <script>
-        // Your existing JavaScript code here
-        function showDetails(detailsType) {
-            document.getElementById('loginContainer').style.display = 'none';
-            document.getElementById('otpContainer').style.display = 'none';
-            document.getElementById('bd_details').style.display = 'block';
-            document.getElementById('detailsContent').style.display = 'block';
-            var detailsContent = document.getElementById('detailsContent');
-            try{
-                document.getElementById('bdName').textContent = localStorage.getItem('name');
-                console.log("#################$")
-                document.getElementById('bdMobile').textContent =localStorage.getItem('mobileNumber');
-                var detailsContent = document.getElementById('detailsContent');
-                if (typeof detailsType === 'string') {
-                    var clickedButtonName = detailsType.replace(/([A-Z])/g, ' $1').trim();
-                    detailsContent.innerHTML = '<h2>' + clickedButtonName + '</h2>';
-                    var detailsData = jsonData[detailsType];
-                    if (detailsData && Object.keys(detailsData).length > 0) {
-                        for (var orderSummary in detailsData) {
-                            var table = document.createElement('table');
-                            var thead = document.createElement('thead');
-                            var tbody = document.createElement('tbody');
-                            var headerRow = document.createElement('tr');
-                            var firstItem = detailsData[orderSummary][Object.keys(detailsData[orderSummary])[0]];
-                            for (var key in firstItem) {
-                                var th = document.createElement('th');
-                                th.textContent = key;
-                                headerRow.appendChild(th);
-                            }
-                            thead.appendChild(headerRow);
-                            table.appendChild(thead);
-                            for (var year in detailsData[orderSummary]) {
-                                var tr = document.createElement('tr');
-                                for (var valueKey in firstItem) {
-                                    var td = document.createElement('td');
-                                    if (detailsData[orderSummary][year][valueKey] !== undefined) {
-                                        if (typeof detailsData[orderSummary][year][valueKey] === 'object') {
-                                            var nestedTable = createNestedTable(detailsData[orderSummary][year][valueKey]);
-                                            td.appendChild(nestedTable);
-                                        } else {
-                                            td.textContent = detailsData[orderSummary][year][valueKey];
-                                        }
-                                    } else {
-                                        td.textContent = ""; 
-                                    }
-                                    tr.appendChild(td);
-                                }
-                                tbody.appendChild(tr);
-                            }
-                            table.appendChild(tbody);
-                            detailsContent.appendChild(table);
-                        }
-                    }
-                    detailsContent.style.display = 'block';
-                } else {
-                    console.error('Invalid detailsType:', detailsType);
+        const params = new URLSearchParams(window.location.search);
+        const selectedDetailsType = params.get('type');
+        const selectedDetailsData = JSON.parse(localStorage.getItem('selectedDetailsData'));
+        renderTable(selectedDetailsType, selectedDetailsData);
+
+        function renderTable(detailsType, detailsData) {
+            var tableContainer = document.getElementById('tableContainer');
+            var buttonName = document.getElementById('buttonName');
+            var bdName = document.getElementById('bdName');
+            var bdMobile = document.getElementById('bdMobile');
+            buttonName.textContent = detailsType;
+
+            bdName.textContent = localStorage.getItem('name');
+            bdMobile.textContent = localStorage.getItem('mobileNumber');
+            var table = document.createElement('table');
+            table.classList.add('table', 'table-bordered');
+            for (var orderSummary in detailsData) {
+                var thead = document.createElement('thead');
+                var tbody = document.createElement('tbody');
+                var headerRow = document.createElement('tr');
+                var firstItem = detailsData[orderSummary][Object.keys(detailsData[orderSummary])[0]];
+                for (var key in firstItem) {
+                    var th = document.createElement('th');
+                    th.textContent = key;
+                    headerRow.appendChild(th);
                 }
-            } catch (error) {
-                alert(error.message);
-                console.error('Error in showDetails:', error);
+                thead.appendChild(headerRow);
+                table.appendChild(thead);
+                for (var year in detailsData[orderSummary]) {
+                    var tr = document.createElement('tr');
+                    for (var valueKey in firstItem) {
+                        var td = document.createElement('td');
+                        if (detailsData[orderSummary][year][valueKey] !== undefined) {
+                            if (typeof detailsData[orderSummary][year][valueKey] === 'object') {
+                                var nestedTable = createNestedTable(detailsData[orderSummary][year][valueKey]);
+                                td.appendChild(nestedTable);
+                            } else {
+                                td.textContent = detailsData[orderSummary][year][valueKey];
+                            }
+                        } else {
+                            td.textContent = ""; 
+                        }
+                        tr.appendChild(td);
+                    }
+                    tbody.appendChild(tr);
+                }
+                table.appendChild(tbody);
+                tableContainer.appendChild(table);
             }
         }
 
-        // Function to navigate back to the main details page
-        function goBack() {
-            // Redirect back to the main page
-            window.location.href = 'index.html';
+        function createNestedTable(obj) {
+            var nestedTable = document.createElement('table');
+            var nestedTbody = document.createElement('tbody');
+
+            for (var prop in obj) {
+                var nestedTr = document.createElement('tr');
+                var nestedTdKey = document.createElement('td');
+                nestedTdKey.textContent = prop;
+                var nestedTdValue = document.createElement('td');
+                nestedTdValue.textContent = obj[prop];
+
+                nestedTr.appendChild(nestedTdKey);
+                nestedTr.appendChild(nestedTdValue);
+
+                nestedTbody.appendChild(nestedTr);
+            }
+
+            nestedTable.appendChild(nestedTbody);
+
+            return nestedTable;
         }
-
-        // Extract details type from the URL
-        var urlParams = new URLSearchParams(window.location.search);
-        var detailsType = urlParams.get('type');
-
-        // Call showDetails function with the extracted detailsType
-        showDetails(detailsType);
     </script>
-</body>
 
+</body>
 </html>

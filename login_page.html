@@ -2,159 +2,444 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login and OTP Verification</title>
+    <title>BD DATA</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #f4f4f4;
-        }
-
-        .container {
-            max-width: 400px;
-            width: 100%;
-            margin: 20px;
+        #loginContainer{
+            display: block;
             text-align: center;
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-top: 150px;
         }
-
-        input {
-            width: calc(100% - 20px);
+        #otpContainer{
+            display: block;
+            text-align: center;
+            margin-top: 150px;
+        }
+        .otp-input {
+            width: 90px;
             padding: 10px;
-            margin-bottom: 10px;
             border: 1px solid #ccc;
             border-radius: 4px;
+            text-align: center;
+        }
+        .otpbtn{
+            margin-top: 9px;
+            text-align: center;
+            color: #007bff;
         }
 
-        button {
-            width: 100%;
-            padding: 10px;
-            background-color: #4caf50;
-            color: #fff;
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f9fa;
+            color: #343a40;
+        }
+
+        h1, h2 {
+            color: #17741a;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
             border: none;
+            padding: 10px 20px;
             border-radius: 4px;
             cursor: pointer;
+            color: #fff;
         }
 
-        .otp-container {
-            display: flex;
-            justify-content: space-between;
+        .btn-primary:hover {
+            background-color: #007bff;
+        }
+
+        #bd_details, #detailsContent {
+            margin-top: 30px;
+        }
+
+        .bg-dark {
+            background-color: #343a40 !important;
+        }
+
+        .text-white {
+            color: #fff !important;
+        }
+
+        .rounded {
+            border-radius: 8px;
+        }
+
+        .list-group-item button {
+            background-color: #4caf50;
+            color: #fff;
+            width: 100%; 
+            padding-top: 15px;
+            padding-bottom: 15px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .list-group-item button:hover {
+            background-color: #5bc0de; 
+        }
+        .list-group-item button:focus {
+            outline: none;
+        }
+
+        table {
+            width: 100%;
             margin-top: 20px;
+            border-collapse: collapse;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
         }
 
-        .otp-input {
-            width: 70px;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
+        th, td {
             text-align: center;
+            border: 1px solid #dee2e6;
+            padding: 12px;
         }
+
+        tbody tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        #detailsContent {
+            margin-top: 20px;
+            overflow-x: auto;
+        }
+
+        .nested-table {
+            margin-top: 10px;
+            margin-left: 20px;
+        }
+
     </style>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
 <body>
 
-  <div class="container" id="loginContainer">
-      <h2>Enter Mobile Number</h2>
-      <input type="tel" id="mobileInput" placeholder="Enter 10-digit mobile number" maxlength="10">
-      <button onclick="sendOTP()">Send OTP</button>
-  </div>
-  
-  <div class="container" id="otpContainer" style="display: none;">
-      <h2>Verify OTP</h2>
-      <div class="otp-container">
-          <input type="text" class="otp-input" id="otp1" maxlength="1" oninput="moveToNext(this, 'otp2')">
-          <input type="text" class="otp-input" id="otp2" maxlength="1" oninput="moveToNext(this, 'otp3')">
-          <input type="text" class="otp-input" id="otp3" maxlength="1" oninput="moveToNext(this, 'otp4')">
-          <input type="text" class="otp-input" id="otp4" maxlength="1" oninput="moveToNext(this, null)">
-      </div>
-      <button onclick="verifyOTP()">Verify OTP</button>
-  </div>
-  
-  <script>
-      function sendOTP() {
-          const mobileInput = document.getElementById('mobileInput');
-          const mobileNumber = mobileInput.value;
-  
-          fetch('https://apis.ab.apnibus.com/account/sales-app/otp/', {
-              method: 'POST',
-              headers: {
-                  'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({ mobile: mobileNumber }),
-          })
-          .then(response => response.json())
-          .then(data => {
-              if (data.status === 200) {
-                  alert('OTP Sent successfully!');
-                  localStorage.setItem('mobileNumber', mobileNumber);
-  
-                  document.getElementById('loginContainer').style.display = 'none';
-                  document.getElementById('otpContainer').style.display = 'block';
-              } else {
-                  throw new Error('Failed to send OTP. Please try again.');
-              }
-          })
-          .catch(error => {
-              alert(error.message);
-              console.error(error);
-          });
-      }
-  
-      function moveToNext(currentInput, nextInputId) {
-          const currentValue = currentInput.value;
-          if (currentValue.length === 1 && nextInputId) {
-              const nextInput = document.getElementById(nextInputId);
-              nextInput.focus();
-          }
-      }
-  
-      function verifyOTP() {
-          const otp1 = document.getElementById('otp1').value;
-          const otp2 = document.getElementById('otp2').value;
-          const otp3 = document.getElementById('otp3').value;
-          const otp4 = document.getElementById('otp4').value;
-          const mobileNumber = localStorage.getItem('mobileNumber');
-  
-          const otp = otp1 + otp2 + otp3 + otp4;
-  
-          fetch('https://apis.ab.apnibus.com/account/sales-app/otp/verify/', {
-              method: 'PUT',
-              headers: {
-                  'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({ mobile: mobileNumber, otp: otp }),
-          })
-          .then(response => response.json())
-          .then(data => {
-              if (data.status === 200) {
-                  const token = data.data.auth_token
-                  console.log("token")
-                  const name = data.data.name
+    <nav class="container flex items-center justify-between bg-blue-500 p-4">
+        <div class="flex items-center">
+            <img src="https://apnibus.com/assets/logo.svg" alt="Bus Logo" class="mr-4 h-90">
+        </div>
 
-                  console.log(token)
-                  localStorage.setItem('token', token);
-                  localStorage.setItem('name', name);
+        <div id="bd_information" class="flex">
+            <p class="p-1 border rounded-md" id="bdName" ></p>
+            <p class="p-1 border rounded-md" id="bdMobile" ></p>
+            <span class="p-1 border rounded-md" onclick="logout()">Logout</span>
+        </div>
+
+    </nav>
+
+    <div id="loginContainer">
+        <input type="tel" id="mobileInput" class="p-4 border rounded-md" placeholder="Enter 10-digit mobile number" maxlength="10">
+        <button class="p-2 bg-white text-blue-500 rounded-md" onclick="sendOTP()">Send OTP</button>
+    </div>
+    <div id="otpContainer" style="display: none;">
+        <div class="otp-container">
+            <input type="text" class="otp-input"  id="otp1" maxlength="1" oninput="moveToNext(this, 'otp2')">
+            <input type="text" class="otp-input"  id="otp2" maxlength="1" oninput="moveToNext(this, 'otp3')">
+            <input type="text" class="otp-input"  id="otp3" maxlength="1" oninput="moveToNext(this, 'otp4')">
+            <input type="text" class="otp-input"  id="otp4" maxlength="1" oninput="moveToNext(this, null)">
+        </div>
+        <button class="otpbtn" onclick="verifyOTP()">Verify OTP</button>
+    </div>
+
+    <div id="bd_details">
+        <div class="row">
+            <div class="col-md-6 col-sm-6">
+                <div class="list-group-item"><button id="total_orders_btn" onclick="showDetails('totalOrders')">Total Orders</button></div>
+            </div>
+            <div class="col-md-6 col-sm-6">
+                <div class="list-group-item"><button id="total_gps_orders_btn" onclick="showDetails('totalGpsOrders')">Total GPS Orders</button></div>
+            </div>
+            <div class="col-md-6 col-sm-6">
+                <div class="list-group-item"><button id="bus_form_pending" onclick="showDetails('busFormPending')">Bus Details Pending</button></div>
+            </div>
+            <div class="col-md-6 col-sm-6">
+                <div class="list-group-item"><button id="total_api_orders_btn" onclick="showDetails('totalApiOrders')">Total API Orders</button></div>
+            </div>
+            <div class="col-md-6 col-sm-6">
+                <div class="list-group-item"><button id="gps_pending_btn" onclick="showDetails('gpsPending')">GPS Instalation Pending</button></div>
+            </div>
+            <div class="col-md-6 col-sm-6">
+                <div class="list-group-item"><button id="api_pending_btn" onclick="showDetails('apiPending')">API Pending</button></div>
+            </div>
+            <div class="col-md-6 col-sm-6">
+                <div class="list-group-item"><button id="kyc_pending_btn" onclick="showDetails('kycPending')">KYC Pending</button></div>
+            </div>
+        </div>
+    </div>
 
 
-              } else {
-                  throw new Error('Failed to verify OTP. Please try again.');
-              }
-          })
-          .catch(error => {
-              alert(error.message);
-              console.error(error);
-          });
-      }
-  </script>
-  
-  </body>
-  </html>
+    <div id="detailsContent" class="text-center"></div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        var jsonData;
+        var bdToken;
+
+        function showLoginContainer() {
+            document.getElementById('loginContainer').style.display = 'block';
+            document.getElementById('otpContainer').style.display = 'none';
+            document.getElementById('bd_details').style.display = 'none';
+            document.getElementById('detailsContent').style.display = 'none';
+        }
+        function showOTPContainer() {
+            document.getElementById('loginContainer').style.display = 'none';
+            document.getElementById('otpContainer').style.display = 'block';
+            document.getElementById('bd_details').style.display = 'none';
+            document.getElementById('detailsContent').style.display = 'none';
+        }
+        function showDetailsContainer() {
+            document.getElementById('loginContainer').style.display = 'none';
+            document.getElementById('otpContainer').style.display = 'none';
+            document.getElementById('bd_details').style.display = 'block';
+            document.getElementById('detailsContent').style.display = 'none';
+        }
+
+
+        function sendOTP() {
+            const mobileInput = document.getElementById('mobileInput');
+            const mobileNumber = mobileInput.value;
+    
+            fetch('https://apis.ab.apnibus.com/account/sales-app/otp/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ mobile: mobileNumber }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 200) {
+                    localStorage.setItem('mobileNumber', mobileNumber);
+    
+                    document.getElementById('loginContainer').style.display = 'none';
+                    document.getElementById('otpContainer').style.display = 'block';
+                } else {
+                    throw new Error('Failed to send OTP. Please try again.');
+                }
+            })
+            .catch(error => {
+                alert(error.message);
+                console.error(error);
+            });
+        }
+        function moveToNext(currentInput, nextInputId) {
+            const currentValue = currentInput.value;
+            if (currentValue.length === 1 && nextInputId) {
+                const nextInput = document.getElementById(nextInputId);
+                nextInput.focus();
+            }
+        }
+        function verifyOTP() {
+            const otp1 = document.getElementById('otp1').value;
+            const otp2 = document.getElementById('otp2').value;
+            const otp3 = document.getElementById('otp3').value;
+            const otp4 = document.getElementById('otp4').value;
+            const mobileNumber = localStorage.getItem('mobileNumber');
+    
+            const otp = otp1 + otp2 + otp3 + otp4;
+    
+            fetch('https://apis.ab.apnibus.com/account/sales-app/otp/verify/', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ mobile: mobileNumber, otp: otp }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 200) {
+                    const token = data.data.auth_token
+                    console.log("token")
+                    const name = data.data.name
+                    localStorage.setItem('token', token);
+                    localStorage.setItem('name', name);
+
+                    const apiUrl = 'https://apis.ab.apnibus.com/onboarding/bdSummarySales';
+                    const postData = {
+                    bdToken: token
+                    };
+                    fetch(apiUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(postData)
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                        throw new Error(`HTTP error! Status: ${response.status}`);
+                        }
+                        return response.json(); 
+                    })
+                    .then(data => {
+                        jsonData = data;
+                        console.log('POST request successful:', jsonData);
+                        showDetails('')
+                        document.getElementById('total_orders_btn').innerHTML += ' (' + jsonData.totalOrders.count + ')';
+                        document.getElementById('total_gps_orders_btn').innerHTML +=  ' ('+ jsonData.totalGpsOrders.count +')';
+                        document.getElementById('bus_form_pending').innerHTML += ' (' + jsonData.gpsPending.count + ')';
+                        document.getElementById('total_api_orders_btn').innerHTML += ' ('+ jsonData.totalApiOrders.count + ')';
+                        document.getElementById('gps_pending_btn').innerHTML += ' (' + jsonData.gpsPending.count + ')';
+                        document.getElementById('api_pending_btn').innerHTML += ' (' + jsonData.apiPending.count + ')';
+                        document.getElementById('kyc_pending_btn').innerHTML += ' (' + jsonData.kycPending.count + ')';
+                    })
+                    .catch(error => {
+                        alert(error.message);
+                        console.error('Error:', error);
+                    });
+                } else {
+                    throw new Error('Failed to verify OTP. Please try again.');
+                }
+            })
+            .catch(error => {
+                alert(error.message);
+                console.error(error);
+            });
+        }
+
+        function showDetails(detailsType) {
+            document.getElementById('loginContainer').style.display = 'none';
+            document.getElementById('otpContainer').style.display = 'none';
+            document.getElementById('bd_details').style.display = 'block';
+            document.getElementById('detailsContent').style.display = 'block';
+            var detailsContent = document.getElementById('detailsContent');
+            try{
+                document.getElementById('bdName').textContent = localStorage.getItem('name');
+                console.log("#################$")
+                document.getElementById('bdMobile').textContent =localStorage.getItem('mobileNumber');
+                var detailsContent = document.getElementById('detailsContent');
+                if (typeof detailsType === 'string') {
+                    var clickedButtonName = detailsType.replace(/([A-Z])/g, ' $1').trim();
+                    detailsContent.innerHTML = '<h2>' + clickedButtonName + '</h2>';
+                    var detailsData = jsonData[detailsType];
+                    if (detailsData && Object.keys(detailsData).length > 0) {
+                        for (var orderSummary in detailsData) {
+                            var table = document.createElement('table');
+                            var thead = document.createElement('thead');
+                            var tbody = document.createElement('tbody');
+                            var headerRow = document.createElement('tr');
+                            var firstItem = detailsData[orderSummary][Object.keys(detailsData[orderSummary])[0]];
+                            for (var key in firstItem) {
+                                var th = document.createElement('th');
+                                th.textContent = key;
+                                headerRow.appendChild(th);
+                            }
+                            thead.appendChild(headerRow);
+                            table.appendChild(thead);
+                            for (var year in detailsData[orderSummary]) {
+                                var tr = document.createElement('tr');
+                                for (var valueKey in firstItem) {
+                                    var td = document.createElement('td');
+                                    if (detailsData[orderSummary][year][valueKey] !== undefined) {
+                                        if (typeof detailsData[orderSummary][year][valueKey] === 'object') {
+                                            var nestedTable = createNestedTable(detailsData[orderSummary][year][valueKey]);
+                                            td.appendChild(nestedTable);
+                                        } else {
+                                            td.textContent = detailsData[orderSummary][year][valueKey];
+                                        }
+                                    } else {
+                                        td.textContent = ""; 
+                                    }
+                                    tr.appendChild(td);
+                                }
+                                tbody.appendChild(tr);
+                            }
+                            table.appendChild(tbody);
+                            detailsContent.appendChild(table);
+                        }
+                    }
+                    detailsContent.style.display = 'block';
+                } else {
+                    console.error('Invalid detailsType:', detailsType);
+                }
+            } catch (error) {
+                alert(error.message);
+                console.error('Error in showDetails:', error);
+            }
+        }
+        showLoginContainer();
+
+        function createNestedTable(obj) {
+            var nestedTable = document.createElement('table');
+            var nestedTbody = document.createElement('tbody');
+
+            for (var prop in obj) {
+                var nestedTr = document.createElement('tr');
+                var nestedTdKey = document.createElement('td');
+                nestedTdKey.textContent = prop;
+                var nestedTdValue = document.createElement('td');
+                nestedTdValue.textContent = obj[prop];
+
+                nestedTr.appendChild(nestedTdKey);
+                nestedTr.appendChild(nestedTdValue);
+
+                nestedTbody.appendChild(nestedTr);
+            }
+
+            nestedTable.appendChild(nestedTbody);
+
+            return nestedTable;
+        }
+        function logout() {
+            // Clear the stored user data
+            localStorage.removeItem('mobileNumber');
+            localStorage.removeItem('token');
+            localStorage.removeItem('name');
+
+            // Show the login container
+            showLoginContainer();
+        }
+        function checkLoginState() {
+            const token = localStorage.getItem('token');
+            const apiUrl = 'https://apis.ab.apnibus.com/onboarding/bdSummarySales';
+            const postData = {
+            bdToken: token
+            };
+            fetch(apiUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(postData)
+            })
+            .then(response => {
+                if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json(); 
+            })
+            .then(data => {
+                jsonData = data;
+                console.log('POST request successful:', jsonData);
+                showDetails('')
+                document.getElementById('total_orders_btn').innerHTML += ' (' + jsonData.totalOrders.count + ')';
+                document.getElementById('total_gps_orders_btn').innerHTML +=  ' ('+ jsonData.totalGpsOrders.count +')';
+                document.getElementById('bus_form_pending').innerHTML += ' (' + jsonData.gpsPending.count + ')';
+                document.getElementById('total_api_orders_btn').innerHTML += ' ('+ jsonData.totalApiOrders.count + ')';
+                document.getElementById('gps_pending_btn').innerHTML += ' (' + jsonData.gpsPending.count + ')';
+                document.getElementById('api_pending_btn').innerHTML += ' (' + jsonData.apiPending.count + ')';
+                document.getElementById('kyc_pending_btn').innerHTML += ' (' + jsonData.kycPending.count + ')';
+            })
+            .catch(error => {
+                alert(error.message);
+                console.error('Error:', error);
+            });
+            if (token) {
+                showDetailsContainer();
+            } else {
+                showLoginContainer();
+            }
+        }
+        checkLoginState();
+    </script>
+</body>
+</html>
