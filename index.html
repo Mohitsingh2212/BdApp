@@ -218,7 +218,6 @@
             .then(response => response.json())
             .then(data => {
                 if (data.status === 200) {
-                    alert('OTP Sent successfully!');
                     localStorage.setItem('mobileNumber', mobileNumber);
     
                     document.getElementById('loginContainer').style.display = 'none';
@@ -261,7 +260,6 @@
                     const token = data.data.auth_token
                     console.log("token")
                     const name = data.data.name
-                    console.log("$$##$$$$$",token)
                     localStorage.setItem('token', token);
                     localStorage.setItem('name', name);
 
