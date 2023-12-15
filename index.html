@@ -318,8 +318,6 @@
                 document.getElementById('bdMobile').textContent =localStorage.getItem('mobileNumber');
                 var detailsContent = document.getElementById('detailsContent');
                 if (typeof detailsType === 'string') {
-                    var clickedButtonName = detailsType.replace(/([A-Z])/g, ' $1').trim();
-                    detailsContent.innerHTML = '<h2>' + clickedButtonName + '</h2>';
                     var detailsData = jsonData[detailsType];
                     if (detailsData && Object.keys(detailsData).length > 0) {
                         for (var orderSummary in detailsData) {
