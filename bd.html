@@ -156,13 +156,13 @@
                 <div class="list-group-item"><button id="total_gps_orders_btn" onclick="showDetails('totalGpsOrders')">Total GPS Orders</button></div>
             </div>
             <div class="col-md-6 col-sm-6">
-                <div class="list-group-item"><button id="bus_form_pending" onclick="showDetails('busFormPending')">Bus Form Pending</button></div>
+                <div class="list-group-item"><button id="bus_form_pending" onclick="showDetails('busFormPending')">Bus Details Pending</button></div>
             </div>
             <div class="col-md-6 col-sm-6">
                 <div class="list-group-item"><button id="total_api_orders_btn" onclick="showDetails('totalApiOrders')">Total API Orders</button></div>
             </div>
             <div class="col-md-6 col-sm-6">
-                <div class="list-group-item"><button id="gps_pending_btn" onclick="showDetails('gpsPending')">GPS Pending</button></div>
+                <div class="list-group-item"><button id="gps_pending_btn" onclick="showDetails('gpsPending')">GPS Instalation Pending</button></div>
             </div>
             <div class="col-md-6 col-sm-6">
                 <div class="list-group-item"><button id="api_pending_btn" onclick="showDetails('apiPending')">API Pending</button></div>
@@ -311,21 +311,51 @@
             document.getElementById('otpContainer').style.display = 'none';
             document.getElementById('bd_details').style.display = 'block';
             document.getElementById('detailsContent').style.display = 'block';
-    
-            try {
+            var detailsContent = document.getElementById('detailsContent');
+            try{
                 document.getElementById('bdName').textContent = localStorage.getItem('name');
-                document.getElementById('bdMobile').textContent = localStorage.getItem('mobileNumber');
+                console.log("#################$")
+                document.getElementById('bdMobile').textContent =localStorage.getItem('mobileNumber');
                 var detailsContent = document.getElementById('detailsContent');
                 if (typeof detailsType === 'string') {
                     var clickedButtonName = detailsType.replace(/([A-Z])/g, ' $1').trim();
                     detailsContent.innerHTML = '<h2>' + clickedButtonName + '</h2>';
                     var detailsData = jsonData[detailsType];
                     if (detailsData && Object.keys(detailsData).length > 0) {
-                        localStorage.setItem('selectedDetailsType', detailsType);
-                        localStorage.setItem('selectedDetailsData', JSON.stringify(detailsData));
-    
-                        // Update this line to pass parameters
-                        window.location.href = 'details.html?type=' + detailsType;
+                        for (var orderSummary in detailsData) {
+                            var table = document.createElement('table');
+                            var thead = document.createElement('thead');
+                            var tbody = document.createElement('tbody');
+                            var headerRow = document.createElement('tr');
+                            var firstItem = detailsData[orderSummary][Object.keys(detailsData[orderSummary])[0]];
+                            for (var key in firstItem) {
+                                var th = document.createElement('th');
+                                th.textContent = key;
+                                headerRow.appendChild(th);
+                            }
+                            thead.appendChild(headerRow);
+                            table.appendChild(thead);
+                            for (var year in detailsData[orderSummary]) {
+                                var tr = document.createElement('tr');
+                                for (var valueKey in firstItem) {
+                                    var td = document.createElement('td');
+                                    if (detailsData[orderSummary][year][valueKey] !== undefined) {
+                                        if (typeof detailsData[orderSummary][year][valueKey] === 'object') {
+                                            var nestedTable = createNestedTable(detailsData[orderSummary][year][valueKey]);
+                                            td.appendChild(nestedTable);
+                                        } else {
+                                            td.textContent = detailsData[orderSummary][year][valueKey];
+                                        }
+                                    } else {
+                                        td.textContent = ""; 
+                                    }
+                                    tr.appendChild(td);
+                                }
+                                tbody.appendChild(tr);
+                            }
+                            table.appendChild(tbody);
+                            detailsContent.appendChild(table);
+                        }
                     }
                     detailsContent.style.display = 'block';
                 } else {
@@ -338,6 +368,27 @@
         }
         showLoginContainer();
 
+        function createNestedTable(obj) {
+            var nestedTable = document.createElement('table');
+            var nestedTbody = document.createElement('tbody');
+
+            for (var prop in obj) {
+                var nestedTr = document.createElement('tr');
+                var nestedTdKey = document.createElement('td');
+                nestedTdKey.textContent = prop;
+                var nestedTdValue = document.createElement('td');
+                nestedTdValue.textContent = obj[prop];
+
+                nestedTr.appendChild(nestedTdKey);
+                nestedTr.appendChild(nestedTdValue);
+
+                nestedTbody.appendChild(nestedTr);
+            }
+
+            nestedTable.appendChild(nestedTbody);
+
+            return nestedTable;
+        }
         function logout() {
             // Clear the stored user data
             localStorage.removeItem('mobileNumber');
