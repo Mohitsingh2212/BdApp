@@ -170,13 +170,6 @@
             <div class="col-md-6 col-sm-6">
                 <div class="list-group-item"><button id="kyc_pending_btn" onclick="showDetails('kycPending')">KYC Pending</button></div>
             </div>
-            <div class="col-md-6 col-sm-6">
-<<<<<<< HEAD
-                <div class="list-group-item"><button id="sticker" onclick="showDetails('stickerPending')">Sticker Pending</button></div>
-=======
-                <div class="list-group-item"><button id="bus_sticker_pending" onclick="showDetails('busStickerPending')">Sticker Pending</button></div>
->>>>>>> 6a16395 (final)
-            </div>
         </div>
     </div>
 
@@ -289,17 +282,8 @@
                     })
                     .then(data => {
                         jsonData = data;
-                        console.log("#################$",data)
                         console.log('POST request successful:', jsonData);
                         showDetails('')
-                        document.getElementById('total_orders_btn').innerHTML += ' (' + jsonData.totalOrders.count + ')';
-                        document.getElementById('total_gps_orders_btn').innerHTML +=  ' ('+ jsonData.totalGpsOrders.count +')';
-                        document.getElementById('bus_form_pending').innerHTML += ' (' + jsonData.gpsPending.count + ')';
-                        document.getElementById('total_api_orders_btn').innerHTML += ' ('+ jsonData.totalApiOrders.count + ')';
-                        document.getElementById('gps_pending_btn').innerHTML += ' (' + jsonData.gpsPending.count + ')';
-                        document.getElementById('api_pending_btn').innerHTML += ' (' + jsonData.apiPending.count + ')';
-                        document.getElementById('kyc_pending_btn').innerHTML += ' (' + jsonData.kycPending.count + ')';
-                        document.getElementById('bus_sticker_pending').innerHTML += ' (' + jsonData.busStickerPending.count + ')';
                     })
                     .catch(error => {
                         alert(error.message);
@@ -327,6 +311,8 @@
                 document.getElementById('bdMobile').textContent =localStorage.getItem('mobileNumber');
                 var detailsContent = document.getElementById('detailsContent');
                 if (typeof detailsType === 'string') {
+                    var clickedButtonName = detailsType.replace(/([A-Z])/g, ' $1').trim();
+                    detailsContent.innerHTML = '<h2>' + clickedButtonName + '</h2>';
                     var detailsData = jsonData[detailsType];
                     if (detailsData && Object.keys(detailsData).length > 0) {
                         for (var orderSummary in detailsData) {
@@ -435,7 +421,6 @@
                 document.getElementById('gps_pending_btn').innerHTML += ' (' + jsonData.gpsPending.count + ')';
                 document.getElementById('api_pending_btn').innerHTML += ' (' + jsonData.apiPending.count + ')';
                 document.getElementById('kyc_pending_btn').innerHTML += ' (' + jsonData.kycPending.count + ')';
-                document.getElementById('bus_sticker_pending').innerHTML += ' (' + jsonData.busStickerPending.count + ')';
             })
             .catch(error => {
                 alert(error.message);

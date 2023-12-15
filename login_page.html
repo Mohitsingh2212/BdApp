@@ -170,12 +170,9 @@
             <div class="col-md-6 col-sm-6">
                 <div class="list-group-item"><button id="kyc_pending_btn" onclick="showDetails('kycPending')">KYC Pending</button></div>
             </div>
-<<<<<<< HEAD
-=======
             <div class="col-md-6 col-sm-6">
                 <div class="list-group-item"><button id="bus_sticker_pending" onclick="showDetails('busStickerPending')">Sticker Pending</button></div>
             </div>
->>>>>>> 6a16395 (final)
         </div>
     </div>
 
@@ -288,10 +285,7 @@
                     })
                     .then(data => {
                         jsonData = data;
-<<<<<<< HEAD
-=======
                         console.log("#################$",data)
->>>>>>> 6a16395 (final)
                         console.log('POST request successful:', jsonData);
                         showDetails('')
                         document.getElementById('total_orders_btn').innerHTML += ' (' + jsonData.totalOrders.count + ')';
@@ -301,10 +295,7 @@
                         document.getElementById('gps_pending_btn').innerHTML += ' (' + jsonData.gpsPending.count + ')';
                         document.getElementById('api_pending_btn').innerHTML += ' (' + jsonData.apiPending.count + ')';
                         document.getElementById('kyc_pending_btn').innerHTML += ' (' + jsonData.kycPending.count + ')';
-<<<<<<< HEAD
-=======
                         document.getElementById('bus_sticker_pending').innerHTML += ' (' + jsonData.busStickerPending.count + ')';
->>>>>>> 6a16395 (final)
                     })
                     .catch(error => {
                         alert(error.message);
@@ -442,10 +433,7 @@
                 document.getElementById('gps_pending_btn').innerHTML += ' (' + jsonData.gpsPending.count + ')';
                 document.getElementById('api_pending_btn').innerHTML += ' (' + jsonData.apiPending.count + ')';
                 document.getElementById('kyc_pending_btn').innerHTML += ' (' + jsonData.kycPending.count + ')';
-<<<<<<< HEAD
-=======
                 document.getElementById('bus_sticker_pending').innerHTML += ' (' + jsonData.busStickerPending.count + ')';
->>>>>>> 6a16395 (final)
             })
             .catch(error => {
                 alert(error.message);
