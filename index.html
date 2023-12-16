@@ -149,6 +149,7 @@
     </div>
 
     <div id="bd_details">
+        <h2 id="operatorCount">Total Operators: </h2>
         <div class="row">
             <div class="col-md-6 col-sm-6">
                 <div class="list-group-item"><button id="total_orders_btn" onclick="showDetails('totalOrders')">Total Orders</button></div>
@@ -333,12 +334,10 @@
         showLoginContainer();
 
         function logout() {
-            // Clear the stored user data
             localStorage.removeItem('mobileNumber');
             localStorage.removeItem('token');
             localStorage.removeItem('name');
 
-            // Show the login container
             showLoginContainer();
         }
         function checkLoginState() {
@@ -363,6 +362,7 @@
             .then(data => {
                 jsonData = data;
                 console.log('POST request successful:', jsonData);
+                document.getElementById('operatorCount').innerHTML += jsonData.operatorCount;
                 showDetails('')
                 document.getElementById('total_orders_btn').innerHTML += ' (' + jsonData.totalOrders.count + ')';
                 document.getElementById('total_gps_orders_btn').innerHTML +=  ' ('+ jsonData.totalGpsOrders.count +')';
