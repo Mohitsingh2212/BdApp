@@ -26,10 +26,6 @@
         .table-bordered th, .table-bordered td {
             border: 1px solid #000;
         }
-        #buttonName{
-            padding: 10px;
-            color: #4caf50;
-        }
     </style>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
@@ -44,6 +40,10 @@
         </div>
     </nav>
 
+    <div class="container">
+        <div class="col-md-1 list-group-item mt-3"><button id="backButton" >Back</button></div>
+    </div>
+
     <div class="container" id="tableContainer">
         <h2 id="buttonName" style="font-weight: bold;"></h2>
     </div>
@@ -53,6 +53,11 @@
         const selectedDetailsType = params.get('type');
         const selectedDetailsData = JSON.parse(localStorage.getItem('selectedDetailsData'));
         renderTable(selectedDetailsType, selectedDetailsData);
+
+        const backButton = document.getElementById('backButton');
+        backButton.addEventListener('click', function () {
+            window.location.href = 'bd.html';
+        });
 
         function renderTable(detailsType, detailsData) {
             var tableContainer = document.getElementById('tableContainer');

@@ -261,7 +261,6 @@
             .then(data => {
                 if (data.status === 200) {
                     const token = data.data.auth_token
-                    console.log("token")
                     const name = data.data.name
                     localStorage.setItem('token', token);
                     localStorage.setItem('name', name);
@@ -285,17 +284,7 @@
                     })
                     .then(data => {
                         jsonData = data;
-                        console.log("#################$",data)
-                        console.log('POST request successful:', jsonData);
                         showDetails('')
-                        document.getElementById('total_orders_btn').innerHTML += ' (' + jsonData.totalOrders.count + ')';
-                        document.getElementById('total_gps_orders_btn').innerHTML +=  ' ('+ jsonData.totalGpsOrders.count +')';
-                        document.getElementById('bus_form_pending').innerHTML += ' (' + jsonData.gpsPending.count + ')';
-                        document.getElementById('total_api_orders_btn').innerHTML += ' ('+ jsonData.totalApiOrders.count + ')';
-                        document.getElementById('gps_pending_btn').innerHTML += ' (' + jsonData.gpsPending.count + ')';
-                        document.getElementById('api_pending_btn').innerHTML += ' (' + jsonData.apiPending.count + ')';
-                        document.getElementById('kyc_pending_btn').innerHTML += ' (' + jsonData.kycPending.count + ')';
-                        document.getElementById('bus_sticker_pending').innerHTML += ' (' + jsonData.busStickerPending.count + ')';
                     })
                     .catch(error => {
                         alert(error.message);
@@ -319,7 +308,6 @@
             var detailsContent = document.getElementById('detailsContent');
             try{
                 document.getElementById('bdName').textContent = localStorage.getItem('name');
-                console.log("#################$")
                 document.getElementById('bdMobile').textContent =localStorage.getItem('mobileNumber');
                 var detailsContent = document.getElementById('detailsContent');
                 if (typeof detailsType === 'string') {
@@ -395,12 +383,9 @@
             return nestedTable;
         }
         function logout() {
-            // Clear the stored user data
             localStorage.removeItem('mobileNumber');
             localStorage.removeItem('token');
             localStorage.removeItem('name');
-
-            // Show the login container
             showLoginContainer();
         }
         function checkLoginState() {
@@ -424,7 +409,6 @@
             })
             .then(data => {
                 jsonData = data;
-                console.log('POST request successful:', jsonData);
                 showDetails('')
                 document.getElementById('total_orders_btn').innerHTML += ' (' + jsonData.totalOrders.count + ')';
                 document.getElementById('total_gps_orders_btn').innerHTML +=  ' ('+ jsonData.totalGpsOrders.count +')';
